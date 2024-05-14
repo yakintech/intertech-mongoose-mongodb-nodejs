@@ -22,10 +22,25 @@ app.get('/', function (req, res) {
 
 //get all movies
 app.get('/api/movies', async function (req, res) {
-    var moviesCollection = db.collection("movies")
 
+    let limit = 100;
+    let searchTitle = ""
+    let year = 0
+
+    if (req.query.limit != undefined && req.query.limit != null) {
+        limit = parseInt(req.query.limit)
+    }
+    if (req.query.title != undefined && req.query.title != null) {
+        searchTitle = req.query.title
+    }
+
+    if (req.query.year != undefined && req.query.year != null) {
+        year = parseInt(req.query.year)
+    }
+
+    var moviesCollection = db.collection("movies")
     //get 100 films from movies collection
-    var movies = await moviesCollection.find({}).limit(100).toArray()
+    var movies = await moviesCollection.find({ "title": { "$regex": searchTitle }, "year": { "$gte": year } }).limit(limit).toArray()
     return res.json(movies)
 })
 
@@ -61,9 +76,6 @@ app.delete('/api/movies/:id', async function(req,res){
     }
 
 })
-
-
-
 
 
 

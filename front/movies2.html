@@ -35,15 +35,86 @@
         .filmBox h3{
             font-size: 15px;
         }
+        .searchBox{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .searchBox input{
+            padding: 10px;
+            margin-right: 10px;
+        }
+        .searchBox button{
+            padding: 10px;
+        }
+        .searchBox label{
+            font-size: 20px;
+            margin-right: 10px;
+        }   
+        .selectbox{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .selectbox select{
+            padding: 10px;
+            margin-right: 10px;
+        }
+        .selectbox label{
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+
+
 
     </style>
 </head>
 <body>
+    <div>
+        <div class="searchBox">
+            <label for="">Search Title: </label>
+            <input type="text" id="searchTitle">
+            <button onclick="search()">Search By Title ( in all films ) </button>
+        </div>
+    </div>
+    <div class="selectbox">
+        <label for="">Count</label>
+        <select name="count" id="count">
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="1000">1000</option>
+            <option value="2500">2500</option>
+            <option value="5000">5000</option>
+        </select>
+
+    </div>
+
+    <hr>
+    <div class="selectbox">
+        <select id="year">
+            <option value="0">Seçiniz</option>
+
+        </select>
+    </div>
+
+    <hr>
     <div id="container">
     </div>
     
 </body>
 <script>
+
+//1900-2020 arasında yılları selectbox a ekliyorum
+    for (let i = 1900; i <= 2020; i++) {
+        var option = document.createElement("option")
+        option.value = i
+        option.innerHTML = i
+        document.getElementById("year").appendChild(option)
+    }
+
     fetch("http://localhost:8080/api/movies")
         .then(res => res.json())
         .then(data => {
@@ -62,5 +133,93 @@
                 document.getElementById("container").appendChild(filmBox)
             });
         })
+
+    function search(){
+        let searchData = document.getElementById("searchTitle").value
+        limit = 20000
+
+        if(searchData == ""){
+            alert("Please enter a title")
+            return
+        }
+        
+        fetch(`http://localhost:8080/api/movies?title=${searchData}&limit=limit`)
+        .then(res => res.json())
+        .then(data => {
+            //filmleri API den çektikten sonra her DÖNDÜĞÜMDE bir li elementi create edip ul ye ekliyırum
+            document.getElementById("container").innerHTML = ""
+            data.forEach(element => {
+                var filmBox = document.createElement("div")
+                filmBox.className = "filmBox"
+                filmBox.innerHTML = `
+                    <h1>${element.title}</h1>
+                    <p>${element.released}</p>
+                    <img src="${element.poster}" alt="">
+                    <h3>Year:${element.year}</h3>
+                    <span>Languages: ${element.languages}</span>
+                    <span>Actors: ${element.actors}</span>
+                `
+                document.getElementById("container").appendChild(filmBox)
+            });
+        })
+    
+    }
+
+    document.getElementById("count").addEventListener("change", function(){
+        //reset year select
+        document.getElementById("year").value = 0
+        let count = document.getElementById("count").value
+        fetch(`http://localhost:8080/api/movies?limit=${count}`)
+        .then(res => res.json())
+        .then(data => {
+            //filmleri API den çektikten sonra her DÖNDÜĞÜMDE bir li elementi create edip ul ye ekliyırum
+            document.getElementById("container").innerHTML = ""
+            data.forEach(element => {
+                var filmBox = document.createElement("div")
+                filmBox.className = "filmBox"
+                filmBox.innerHTML = `
+                    <h1>${element.title}</h1>
+                    <p>${element.released}</p>
+                    <img src="${element.poster}" alt="">
+                    <h3>Year:${element.year}</h3>
+                    <span>Languages: ${element.languages}</span>
+                    <span>Actors: ${element.actors}</span>
+                `
+                document.getElementById("container").appendChild(filmBox)
+            });
+        })
+    })
+
+
+    document.getElementById("year").addEventListener("change", function(){
+
+        //reset count select
+        document.getElementById("count").value = 100
+        let year = document.getElementById("year").value
+
+        if(year == 0){
+            return
+        }
+        fetch(`http://localhost:8080/api/movies?year=${year}`)
+        .then(res => res.json())
+        .then(data => {
+            //filmleri API den çektikten sonra her DÖNDÜĞÜMDE bir li elementi create edip ul ye ekliyırum
+            document.getElementById("container").innerHTML = ""
+            data.forEach(element => {
+                var filmBox = document.createElement("div")
+                filmBox.className = "filmBox"
+                filmBox.innerHTML = `
+                    <h1>${element.title}</h1>
+                    <p>${element.released}</p>
+                    <img src="${element.poster}" alt="">
+                    <h3>Year:${element.year}</h3>
+                    <span>Languages: ${element.languages}</span>
+                    <span>Actors: ${element.actors}</span>
+                `
+                document.getElementById("container").appendChild(filmBox)
+            });
+        })
+    })
+
 </script>
 </html>
