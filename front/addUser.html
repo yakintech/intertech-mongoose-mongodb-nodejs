@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    h1 {
+        text-align: center;
+    }
+
+    .addUserBox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .addUserBox div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .addUserBox div label {
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    .addUserBox div input {
+        padding: 10px;
+    }
+
+    .addUserBox div button {
+        padding: 10px;
+    }
+</style>
+
+<body>
+    <h1>Add User</h1>
+    <hr>
+    <div class="addUserBox">
+        <div>
+            <label for="">Name:</label>
+            <input type="text" id="name" />
+        </div>
+        <div>
+            <label for="">Email:</label>
+            <input type="text" id="email" />
+        </div>
+        <div>
+            <button onclick="addNewUser()">Add</button>
+        </div>
+    </div>
+    <hr>
+    <h2>Users</h2>
+    <ul>
+
+    </ul>
+</body>
+<script>
+    function addNewUser() {
+        let name = document.getElementById('name').value;
+        let email = document.getElementById('email').value;
+        let data = {
+            name: name,
+            email: email
+        }
+        fetch('http://localhost:8080/api/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            return response.json();
+        }).then(data => {
+            console.log(data);
+            alert('User added successfully');
+            loadUsers();
+        }).catch(err => {
+            console.log(err);
+            alert('Error adding user');
+        });
+    }
+
+    function loadUsers() {
+        //clear ul innerhtml
+        document.querySelector('ul').innerHTML = '';
+
+        fetch('http://localhost:8080/api/users')
+            .then(response => {
+                return response.json();
+            }).then(data => {
+                let users = data;
+                let ul = document.querySelector('ul');
+                ul.innerHTML = '';
+                users.forEach(user => {
+                    let li = document.createElement('li');
+                    li.innerHTML = user.name + ' - ' + user.email;
+                    ul.appendChild(li);
+                });
+            }).catch(err => {
+                console.log(err);
+            });
+    }
+
+    loadUsers();
+</script>
+
+</html>

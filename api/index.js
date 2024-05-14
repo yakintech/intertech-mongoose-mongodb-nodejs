@@ -11,7 +11,13 @@ app.use(express.json())
 const url = 'mongodb+srv://bilginc_user:MAeJxxNPxj2Izfgq@cluster0.jcus0vv.mongodb.net/';
 const client = new MongoClient(url);
 
-client.connect()
+client.connect().then(() => {
+    console.log("Connected to MongoDB")
+}
+).catch((error) => {
+    console.log(error)
+}
+)
 const dbName = 'sample_mflix';
 const db = client.db(dbName);
 
@@ -63,14 +69,14 @@ app.get('/api/movies/:id', async function (req, res) {
 })
 
 //delete movie by id
-app.delete('/api/movies/:id', async function(req,res){
+app.delete('/api/movies/:id', async function (req, res) {
 
     try {
         var id = new ObjectId(req.params.id)
         var moviesCollection = db.collection("movies")
-        var deleteResult = await moviesCollection.deleteOne({"_id": id})
+        var deleteResult = await moviesCollection.deleteOne({ "_id": id })
         return res.json(deleteResult)
-        
+
     } catch (error) {
         return res.status(500).json(error)
     }
@@ -78,6 +84,41 @@ app.delete('/api/movies/:id', async function(req,res){
 })
 
 
+app.post("/api/users", function (req, res) {
+
+    try {
+        let newUser = req.body;
+
+        if (newUser == null || newUser == undefined || Object.keys(newUser).length == 0) {
+            return res.status(400).json({ "message": "User object is required!" })
+        }
+
+        const userCollection = db.collection("users")
+        userCollection.insertOne(newUser).then(() => {
+            return res.status(201).json({ "message": "User added successfully!" })
+        })
+        .catch((err) => {
+            return res.status(500).json(err)
+        })
+
+
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+
+})
+
+app.get("/api/users", function (req, res) {
+    
+        const userCollection = db.collection("users")
+        userCollection.find({}).toArray().then((users) => {
+            return res.json(users)
+        })
+        .catch((err) => {
+            return res.status(500).json(err)
+        })
+    
+})
 
 
 app.listen(8080, () => {
