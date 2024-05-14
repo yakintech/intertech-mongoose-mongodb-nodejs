@@ -129,6 +129,8 @@
                     <h3>Year:${element.year}</h3>
                     <span>Languages: ${element.languages}</span>
                     <span>Actors: ${element.actors}</span>
+                    <button onclick="comments('${element._id}')">Comments</button>
+
                 `
                 document.getElementById("container").appendChild(filmBox)
             });
@@ -158,6 +160,7 @@
                     <h3>Year:${element.year}</h3>
                     <span>Languages: ${element.languages}</span>
                     <span>Actors: ${element.actors}</span>
+                    <button onclick="comments('${element._id}')">Comments</button>
                 `
                 document.getElementById("container").appendChild(filmBox)
             });
@@ -184,6 +187,8 @@
                     <h3>Year:${element.year}</h3>
                     <span>Languages: ${element.languages}</span>
                     <span>Actors: ${element.actors}</span>
+                    <button onclick="comments('${element._id}')">Comments</button>
+
                 `
                 document.getElementById("container").appendChild(filmBox)
             });
@@ -215,11 +220,34 @@
                     <h3>Year:${element.year}</h3>
                     <span>Languages: ${element.languages}</span>
                     <span>Actors: ${element.actors}</span>
+                    <button onclick="comments('${element._id}')">Comments</button>
                 `
                 document.getElementById("container").appendChild(filmBox)
             });
         })
     })
+
+
+    function comments(id){
+       //go to api and get comments
+         fetch(`http://localhost:8080/api/comments/${id}`)
+        .then(res => res.json())
+        .then(data => {
+            //filmleri API den çektikten sonra her DÖNDÜĞÜMDE bir li elementi create edip ul ye ekliyırum
+            console.log(data)
+            //write name and text in an alert
+            let commentText = ""
+            data.forEach(element => {
+                commentText += element.name + " : " + element.text + "\n"
+            });
+
+            if(commentText == ""){
+                commentText = "No comments"
+            }
+
+            alert(commentText)
+        })
+    }
 
 </script>
 </html>

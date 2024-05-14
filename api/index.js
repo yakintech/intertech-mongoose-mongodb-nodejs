@@ -97,9 +97,9 @@ app.post("/api/users", function (req, res) {
         userCollection.insertOne(newUser).then(() => {
             return res.status(201).json({ "message": "User added successfully!" })
         })
-        .catch((err) => {
-            return res.status(500).json(err)
-        })
+            .catch((err) => {
+                return res.status(500).json(err)
+            })
 
 
     } catch (error) {
@@ -109,15 +109,42 @@ app.post("/api/users", function (req, res) {
 })
 
 app.get("/api/users", function (req, res) {
-    
-        const userCollection = db.collection("users")
-        userCollection.find({}).toArray().then((users) => {
-            return res.json(users)
-        })
+
+    const userCollection = db.collection("users")
+    userCollection.find({}).toArray().then((users) => {
+        return res.json(users)
+    })
         .catch((err) => {
             return res.status(500).json(err)
         })
-    
+
+})
+
+//delete user by id
+app.delete("/api/users/:id", function (req, res) {
+    try {
+        var id = new ObjectId(req.params.id)
+        var usersCollection = db.collection("users")
+        var deleteResult = usersCollection.deleteOne({ "_id": id })
+        return res.json(deleteResult)
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+})
+
+
+app.get("/api/comments/:movieId", function (req, res) {
+
+    let movieId = req.params.movieId
+    movieId = new ObjectId(movieId)
+    const commentsCollection = db.collection("comments")
+    commentsCollection.find({ "movie_id": movieId }).toArray().then((comments) => {
+        return res.json(comments)
+    }
+    ).catch((err) => {
+        return res.status(500).json(err)
+    })
+
 })
 
 
