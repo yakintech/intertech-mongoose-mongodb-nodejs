@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #container{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            grid-gap: 10px;
+            padding: 10px;
+        }
+        .filmBox{
+            border: 1px solid black;
+            padding: 10px;
+            margin: 10px;
+        }
+        .filmBox img{
+            width: 100px;
+            height: 100px;
+        }
+        .filmBox h1{
+            font-size: 20px;
+        }
+        .filmBox h3{
+            font-size: 15px;
+        }
+        .filmBox span{
+            font-size: 15px;
+        }
+        .filmBox p{
+            font-size: 15px;
+        }
+        .filmBox h3{
+            font-size: 15px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="container">
+    </div>
+    
+</body>
+<script>
+    fetch("http://localhost:8080/api/movies")
+        .then(res => res.json())
+        .then(data => {
+            //filmleri API den çektikten sonra her DÖNDÜĞÜMDE bir li elementi create edip ul ye ekliyırum
+            data.forEach(element => {
+                var filmBox = document.createElement("div")
+                filmBox.className = "filmBox"
+                filmBox.innerHTML = `
+                    <h1>${element.title}</h1>
+                    <p>${element.released}</p>
+                    <img src="${element.poster}" alt="">
+                    <h3>Year:${element.year}</h3>
+                    <span>Languages: ${element.languages}</span>
+                    <span>Actors: ${element.actors}</span>
+                `
+                document.getElementById("container").appendChild(filmBox)
+            });
+        })
+</script>
+</html>
