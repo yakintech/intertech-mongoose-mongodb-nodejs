@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Profile Pic</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+
+</body>
+<script>
+    const tbody = document.querySelector('tbody');
+    fetch('http://localhost:3002/api/users')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(user => {
+                const tr = document.createElement('tr');
+                const profilePicTd = document.createElement('td');
+                const profilePic = document.createElement('img');
+       
+                if (user.profilePic.includes('http'))
+                    profilePic.src = "https://via.placeholder.com/150";
+                else
+                    profilePic.src = "http://localhost:3002/" + user.profilePic;
+                profilePicTd.appendChild(profilePic);
+                tr.appendChild(profilePicTd);
+
+                const emailTd = document.createElement('td');
+                emailTd.textContent = user.email;
+                tr.appendChild(emailTd);
+
+                const addressTd = document.createElement('td');
+                user.address.forEach(address => {
+                    const addressDiv = document.createElement('div');
+                    addressDiv.textContent = `${address.name}: ${address.street}, ${address.city}`;
+                    addressTd.appendChild(addressDiv);
+                });
+                tr.appendChild(addressTd);
+
+                const createdAtTd = document.createElement('td');
+                createdAtTd.textContent = user.createdAt;
+                tr.appendChild(createdAtTd);
+
+                const updatedAtTd = document.createElement('td');
+                updatedAtTd.textContent = user.updatedAt;
+                tr.appendChild(updatedAtTd);
+
+                tbody.appendChild(tr);
+            });
+        });
+</script>
+
+</html>
+
+<!-- "profilePic": "https://via.placeholder.com/150",
+"_id": "66446ab5df4aec032d6a5527",
+"email": "ayca.yildiz@mail.com",
+"address": [
+{
+"_id": "664469933f1ad39dbd1f9aa3",
+"name": "Ev",
+"street": "Vişnezade",
+"city": "İstanbul",
+"__v": 0
+},
+{
+"_id": "664469a03f1ad39dbd1f9aa5",
+"name": "İş",
+"street": "Çukurcuma",
+"city": "İstanbul",
+"__v": 0
+}
+],
+"createdAt": "2024-05-15T07:56:37.918Z",
+"updatedAt": "2024-05-15T07:56:37.918Z",
+"__v": 0 -->

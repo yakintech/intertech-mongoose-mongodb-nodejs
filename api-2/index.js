@@ -6,10 +6,14 @@ const { Schema } = require("mongoose")
 const cors = require("cors")
 const fileUpload = require("express-fileupload")
 const { v4: uuidv4 } = require('uuid');
+const e = require("express")
+
+
 
 const app = express();
 
 app.use(express.json())
+app.use(express.static("public")) // public klasörünü statik olarak yayınlıyorum
 app.use(express.urlencoded({ extended: true })) // artık formdan gelen verileri okuyabilirim
 app.use(fileUpload())
 
@@ -67,9 +71,52 @@ const addressSchema = new Schema({
     city: String
 })
 
+const categorySchema = new Schema({
+    name:String,
+    description: String,
+    //image binary
+    image: Buffer
+})
+
+
 const BlogPostModel = mongoose.model("BlogPost", blogPostSchema)
 const UserModel = mongoose.model("User", userSchema)
 const AddressModel = mongoose.model("Address", addressSchema)
+const CategoryModel = mongoose.model("Category", categorySchema)
+
+
+app.post("/api/category", async (req, res) => {
+
+    try {
+        //image dosyası yoksa hata ver
+        if (!req.files) {
+            return res.status(400).json({ message: "Image is required!" })
+        }
+
+        //image dosyasını binary olarak kaydediyorum
+        let newCategory = new CategoryModel({
+            name: req.body.name,
+            description: req.body.description,
+            image: req.files.categoryImage.data
+        })
+
+        await newCategory.save();
+        return res.json(newCategory)
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+}
+)
+
+app.get("/api/category", async (req, res) => {
+    try {
+        let categories = await CategoryModel.find();
+        return res.json(categories)
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+}
+)
 
 
 
@@ -92,8 +139,8 @@ app.post("/api/users", async (req, res) => {
     if (req.files) {
         var profilePic = req.files.profilePic;
         profilePicPath = uuidv4().toString() + `${profilePic.name}`
-
-        await profilePic.mv(profilePicPath)
+        //public foldera kaydediyorum
+        await profilePic.mv(`./public/${profilePicPath}`)
     }
 
     try {
