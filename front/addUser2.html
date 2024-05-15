@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        form div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        form div label {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        form div input {
+            padding: 10px;
+        }
+
+        form div button {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form action="http://localhost:3002/api/users" method="post">
+        <label for="">Email:</label>
+        <input type="text" id="email" name="email" />
+        <br>
+        <button type="submit"">Add</button>
+    </form>
+</body>
+</html>
