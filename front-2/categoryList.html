@@ -25,6 +25,7 @@
             <tr>
                 <td>Id</td>
                 <td>Name</td>
+                <td>Description</td>
                 <td>Image</td>
             </tr>
         </thead>
@@ -41,8 +42,10 @@
             let td1 = document.createElement('td');
             let td2 = document.createElement('td');
             let td3 = document.createElement('td');
+            let td4 = document.createElement('td');
             td1.innerHTML = category._id;
             td2.innerHTML = category.name;
+            td3.innerHTML = category.description;
             let img = document.createElement('img');
             let bufferData = category.image.data;
             
@@ -51,10 +54,12 @@
             let urlCreator = window.URL || window.webkitURL;
             let imageUrl = urlCreator.createObjectURL(blob);
             img.src = imageUrl;
-            td3.appendChild(img);
+            td4.appendChild(img);
             tr.appendChild(td1);
             tr.appendChild(td2);
             tr.appendChild(td3);
+            tr.appendChild(td4);
+
             table.appendChild(tr);
 
         });

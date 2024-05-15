@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        .addCategoryBox {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        .addCategoryBox div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .addCategoryBox div label {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .addCategoryBox div input {
+            padding: 10px;
+        }
+
+        .addCategoryBox div button {
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="addCategoryBox">
+        <div>
+            <label for="">Name</label>
+            <input type="text" id="name">
+        </div>
+        <div>
+            <label for="">Description</label>
+            <input type="text" id="description">
+        </div>
+        <div>
+            <label for="">Image</label>
+            <input type="file" id="categoryImage" name="categoryImage">
+        </div>
+        <button onclick="addCategory()">Add Category</button>
+    </div>
+
+</body>
+<script>
+    function addCategory() {
+        let name = document.getElementById('name').value;
+        let description = document.getElementById('description').value;
+        let image = document.getElementById('categoryImage').files[0];
+        let formData = new FormData();
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('files', image);
+        fetch('http://localhost:3002/api/category', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+    }
+</script>
+
+</html>

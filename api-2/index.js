@@ -86,6 +86,7 @@ const CategoryModel = mongoose.model("Category", categorySchema)
 
 
 app.post("/api/category", async (req, res) => {
+    console.log("BODY", req.files);
 
     try {
         //image dosyası yoksa hata ver
