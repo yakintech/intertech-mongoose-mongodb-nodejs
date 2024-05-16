@@ -1,7 +1,16 @@
 const { MongoClient } = require("mongodb");
 
-const url = 'mongodb+srv://bilginc_user:MAeJxxNPxj2Izfgq@cluster0.jcus0vv.mongodb.net/';
-const client = new MongoClient(url);
+require('dotenv').config()
+
+
+const url = process.env.MONGODB_CONNECTION
+
+const client = new MongoClient(url,{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    maxPoolSize: 10,  // Bağlantı havuzundaki maksimum bağlantı sayısı
+    socketTimeoutMS: 45000, // Soket işlem süresi aşımını belirler
+});
 
 const dbConnect = () => {
     client.connect().then(() => {

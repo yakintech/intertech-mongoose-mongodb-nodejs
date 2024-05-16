@@ -2,6 +2,9 @@ const express = require('express');
 const { dbConnect, usersCollection } = require('./config/db');
 const app = express();
 const jwt = require("jsonwebtoken")
+
+
+require('dotenv').config()
 const cors = require("cors")
 const rateLimit = require("express-rate-limit")
 
