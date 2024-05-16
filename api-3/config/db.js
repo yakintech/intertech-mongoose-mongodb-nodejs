@@ -17,8 +17,10 @@ const dbName = 'sample_mflix';
 const db = client.db(dbName);
 
 var moviesCollection = db.collection("movies")
+var usersCollection = db.collection("users")
 
 module.exports = {
     dbConnect,
-    moviesCollection
+    moviesCollection,
+    usersCollection
 }

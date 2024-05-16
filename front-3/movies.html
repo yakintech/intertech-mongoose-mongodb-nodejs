@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .userLoginBox {
+            width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 100px;
+        }
+        .userLoginBox div {
+            margin-bottom: 10px;
+        }
+        .userLoginBox label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .userLoginBox input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .userLoginBox button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="userLoginBox">
+        <div>
+            <label for="">EMail</label>
+            <input type="email" id="email" />
+        </div>
+        <div>
+            <label for="">Password</label>
+            <input type="password" id="password" />
+        </div>
+        <div>
+            <button onclick="login()">Login</button>
+        </div>
+    </div>
+
+    <hr>
+    <div class="moviesBox">
+        <table>
+            <thead>
+                <tr>
+                    <th>Movie Name</th>
+                    <th>Year</th>
+                    <th>Poster</th>
+                </tr>
+            </thead>
+            <tbody id="movies">
+            </tbody>
+        </table>
+    </div>
+</body>
+<script>
+    let token = ""
+    function login(){
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+
+        var data = {
+            email: email,
+            password: password
+        }
+
+        fetch('http://localhost:3000/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if(response.status == 404){
+                alert('Invalid email or password')
+            }
+            return response.json()
+        
+        })
+        .then(data => {
+            token = data.token
+            getMovies()
+        })
+    }
+
+
+    function getMovies(){
+        fetch('http://localhost:3000/api/movies', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        })
+        .then(response => response.json())
+        .then(data => {
+            var movies = data
+            var html = ""
+            movies.forEach(movie => {
+                html += "<tr>"
+                html += "<td>" + movie.title + "</td>"
+                html += "<td>" + movie.year + "</td>"
+                html += "<td><img src='" + movie.poster + "' width='100' /></td>"
+                html += "</tr>"
+            })
+            document.getElementById('movies').innerHTML = html
+        })
+    }
+</script>
+</html>
