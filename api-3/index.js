@@ -3,6 +3,7 @@ const { dbConnect, usersCollection } = require('./config/db');
 const app = express();
 const jwt = require("jsonwebtoken")
 const cors = require("cors")
+const rateLimit = require("express-rate-limit")
 
 let tokenKey = "secretKey"
 
@@ -11,6 +12,15 @@ const userRouter = require('./routes/userRouter')
 
 app.use(express.json());
 app.use(cors())
+
+//rate limit config. 5 request in 1 minute
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000,
+    max: 5
+})
+
+app.use(limiter)
+
 
 
 //jwt control bearer token
