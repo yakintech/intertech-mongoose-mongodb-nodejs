@@ -6,7 +6,6 @@ const { Schema } = require("mongoose")
 const cors = require("cors")
 const fileUpload = require("express-fileupload")
 const { v4: uuidv4 } = require('uuid');
-const e = require("express")
 
 
 
@@ -49,8 +48,10 @@ const blogPostSchema = new Schema({
 
 const userSchema = new Schema({
     email: {
-        type: String,
-        unique: true
+        type: String, // alanın tipi
+        unique: true, // alanın unique olmasını sağlar(benzersiz)
+        required: true, // alanın boş geçilemeyeceğini belirtir
+        default: "test@mail.com" // alanın default değerini belirtir
     },
     profilePic: {
         type: String,
@@ -84,9 +85,13 @@ const UserModel = mongoose.model("User", userSchema)
 const AddressModel = mongoose.model("Address", addressSchema)
 const CategoryModel = mongoose.model("Category", categorySchema)
 
+categorySchema.pre("save", function (next) {
+    console.log("Category will be saved!")
+    next()
+})
 
 app.post("/api/category", async (req, res) => {
-    console.log("BODY", req.files);
+
 
     try {
         //image dosyası yoksa hata ver
@@ -102,6 +107,7 @@ app.post("/api/category", async (req, res) => {
         })
 
         await newCategory.save();
+        console.log("Category saved!")
         return res.json(newCategory)
     } catch (error) {
         return res.status(500).json(error)
@@ -222,3 +228,6 @@ app.listen(3002, () => {
 
 //Content Types
 // application/json, application/x-www-form-urlencoded, multipart/form-data
+
+
+//mongoose middleware sample
